@@ -28,7 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     # method called when serializer.save() is executed
     # it receives validated_data -- which is cleaned up user input
     def create(self, validated_data):
-        user = get_user_model().objects.create_user(**validated_data) # Django’s built-in create_user() method to create a new user
+        user = User.objects.create_user(**validated_data) # Django’s built-in create_user() method to create a new user
         token, created = Token.objects.get_or_create(user=user)
         """
         If the user is newly created, a token is generated for them.

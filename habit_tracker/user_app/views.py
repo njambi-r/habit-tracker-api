@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from rest_framework.authentication import TokenAuthentication
 
-User = get_user_model
+User = get_user_model()
 
 # user registration
 class RegisterView(generics.CreateAPIView):
