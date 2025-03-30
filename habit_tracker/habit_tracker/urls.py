@@ -19,6 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('user_app.urls')),
+    path('api/', include('user_app.urls')), # user app
     path('api-auth/', include('rest_framework.urls')),  # Optional: Browsable API login/logout
+    path('api/', include('habit_app.urls')), # habit app
 ]
