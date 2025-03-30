@@ -3,6 +3,8 @@ from rest_framework import viewsets, permissions
 from .models import Habit
 from .serializers import HabitSerializer
 from rest_framework.decorators import action
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 # Create your views here.
 # setup CRUD operations for habit
@@ -14,10 +16,15 @@ class HabitViewSet(viewsets.ModelViewSet):
     https://www.django-rest-framework.org/api-guide/permissions/#isauthenticated 
     Deny permission to any unauthenticated user. API only accessible to registered users. 
     """
+    # Add habit filtering, search, and sorting
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    search_fields = ['name', 'description', 'status']
+    ordering_fields = ['name', 'created_at', 'start_date', 'completed_at', 'status', 'frequency']
+
     def get_queryset(self):
         return Habit.objects.filter(user=self.request.user)   
     """ensure logged in user can only see their data"""
-                              
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user) 
     """
@@ -79,4 +86,7 @@ class HabitViewSet(viewsets.ModelViewSet):
             'message': 'Habit reactivated successfully as a new occurrence.',
             'new_habit_id': new_habit.id
         })
+    
+
+
 
