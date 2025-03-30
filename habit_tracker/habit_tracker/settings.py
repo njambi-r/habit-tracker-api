@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken', # Token authenticatication
     'django_filters', #supports customizable field filtering
+    'drf_yasg', # interactive Swagger documentation
 ]
 
 MIDDLEWARE = [
