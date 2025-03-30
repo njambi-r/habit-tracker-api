@@ -138,3 +138,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+# https://www.django-rest-framework.org/api-guide/pagination/#pagination:~:text=to%20None.-,Setting%20the%20pagination%20style,-The%20pagination%20style
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 15
+}
