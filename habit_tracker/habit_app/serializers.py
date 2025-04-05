@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from .models import Habit
 import datetime
-from reminder_app.serializer import ReminderSerializer
-from analytics_app.serializer import HabitAnalyticsSerializer
+from reminder_app.serializers import ReminderSerializer
+from analytics_app.serializers import HabitAnalyticsSerializer
 
 class HabitSerializer(serializers.ModelSerializer):
     reminders = ReminderSerializer(many=True, read_only=True)

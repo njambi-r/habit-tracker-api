@@ -22,6 +22,9 @@ urlpatterns = [
     path('api/', include('user_app.urls')), # user app
     path('api-auth/', include('rest_framework.urls')),  # Optional: Browsable API login/logout
     path('api/', include('habit_app.urls')), # habit app
+    path('api/', include('analytics_app.urls')), # analytics app
+    path('api/', include('reminder_app.urls')), # analytics app
+
 ]
 
 #----------------------------------------------
