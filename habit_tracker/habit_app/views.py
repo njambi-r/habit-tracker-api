@@ -112,7 +112,7 @@ class HabitFilterView(APIView):
         user = request.user
         filter_type = request.query_params.get('filter')
         if not filter_type:
-            return Response({"error": "Missing filter param"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Missing filter param i.e, day, week, month, year, or custom"}, status=status.HTTP_400_BAD_REQUEST)
         """
         https://www.django-rest-framework.org/api-guide/requests/#query_params
         request.query_params is a more correctly named synonym for request.GET.
@@ -137,10 +137,18 @@ class HabitFilterView(APIView):
 
         elif filter_type == 'year':
             queryset = queryset.filter(start_date__year=today.year)
-        """
-        elif start_date and end_date:
-            queryset = queryset.filter(start_date__range = [start_date, end_date])
-        """       
+        
+        #custom filter where user can specify start and end dates
+        elif filter_type == 'custom':
+            if not start_date or not end_date:
+                return Response({"error": "Both 'start_date' and 'end_date' are required for custom date filtering."}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                queryset = queryset.filter(start_date__range=[start_date, end_date])
+            except ValueError:
+                return Response({"error": "Invalid date format. Use YYYY-MM-DD for 'start_date' and 'end_date'."}, status=status.HTTP_400_BAD_REQUEST)       
+        
         #paginating the filter results
         paginator = HabitPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
