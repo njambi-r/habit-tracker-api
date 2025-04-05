@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     #created apps
     'user_app',
     'habit_app',
+    'analytics_app',
+    'reminder_app',
     # installed apps
     'rest_framework',
     'rest_framework.authtoken', # Token authenticatication

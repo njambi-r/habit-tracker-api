@@ -60,7 +60,25 @@ class HabitViewSet(viewsets.ModelViewSet):
             return Response({'message': 'Habit is already completed.'}, status=400)
         habit.status = 'Completed'
         habit.save()
-        return Response({'message': 'Habit marked as complete.'})
+
+        #update the streak
+        if habit.last_completed_date == today - timedelta(days=1):
+            habit.current_streak +=1
+        else:
+            habit.current_streak = 1 #reset to 1
+
+        habit.longest_streak = max(habit.longest_streak, habit.current_streak)
+        habit.last_completed_date = today
+
+        #analytics
+        analytics, created = HabitAnalytics.objects.get_or_create(habit=habit)
+        analytics.total_completions += 1
+        analytics.last_updated = datetime.now()
+        analytics.save()
+        
+        return Response({'message': 'Habit marked as complete and analytics updated.'})
+    
+
 
     """
     Action when user wants to reactivate a habit they already completed in the past
