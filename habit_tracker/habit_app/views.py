@@ -6,8 +6,9 @@ from .serializers import HabitSerializer
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from datetime import datetime
+from datetime import datetime, timedelta
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
 
 # Create your views here.
 # Add pagination to support page numbers as query parameters
@@ -35,7 +36,7 @@ class HabitViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at', 'start_date', 'completed_at', 'status', 'frequency']
 
     def get_queryset(self):
-        return Habit.objects.filter(user=self.request.user)   
+        return Habit.objects.filter(user=self.request.user.id)   
     """ensure logged in user can only see their data"""
 
     def perform_create(self, serializer):
@@ -101,6 +102,52 @@ class HabitViewSet(viewsets.ModelViewSet):
                 'message': 'Habit reactivated successfully as a new occurrence.',
                 'new_habit_id': new_habit.id
             }, status=status.HTTP_201_CREATED)
+
+# Adding date-based filtering
+"""filter habits by day, week, month, year, or even custom dates"""
+class HabitFilterView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        filter_type = request.query_params.get('filter')
+        if not filter_type:
+            return Response({"error": "Missing filter param"}, status=status.HTTP_400_BAD_REQUEST)
+        """
+        https://www.django-rest-framework.org/api-guide/requests/#query_params
+        request.query_params is a more correctly named synonym for request.GET.
+        For clarity inside your code, we recommend using request.query_params 
+        instead of the Django's standard request.GET."""
+
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+
+        today = datetime.now().date()
+        queryset = Habit.objects.filter(user=user) #ensure user can only filter their data
+
+        if filter_type == 'day':
+            queryset = queryset.filter(start_date = today)
+
+        elif filter_type == 'week':
+            start_of_week = today - timedelta(days = today.weekday())
+            queryset = queryset.filter(start_date__gte = start_of_week, start_date__lte = today)
+
+        elif filter_type == 'month':
+            queryset = queryset.filter(start_date__year = today.year, start_date__month = today.month)
+
+        elif filter_type == 'year':
+            queryset = queryset.filter(start_date__year=today.year)
+        """
+        elif start_date and end_date:
+            queryset = queryset.filter(start_date__range = [start_date, end_date])
+        """       
+        #paginating the filter results
+        paginator = HabitPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = HabitSerializer(paginated_queryset, many = True)
+
+        return paginator.get_paginated_response(serializer.data)
+
         
 
 
