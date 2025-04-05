@@ -9,6 +9,7 @@ from rest_framework import filters
 from datetime import datetime, timedelta
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
+from analytics_app.models import HabitAnalytics
 
 # Create your views here.
 # Add pagination to support page numbers as query parameters
@@ -75,7 +76,7 @@ class HabitViewSet(viewsets.ModelViewSet):
         analytics.total_completions += 1
         analytics.last_updated = datetime.now()
         analytics.save()
-        
+
         return Response({'message': 'Habit marked as complete and analytics updated.'})
     
 
