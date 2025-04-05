@@ -10,7 +10,7 @@ class HabitSerializer(serializers.ModelSerializer):
 
     """Ensure user cannot set start dates in the past"""
     def validate_start_date(self, value):
-        if value < datetime.datetime.now():
+        if value < datetime.date.today():
             raise serializers.ValidationError("Start date must be in the future.")
         return value
         

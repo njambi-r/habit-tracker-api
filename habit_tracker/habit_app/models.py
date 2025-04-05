@@ -35,7 +35,7 @@ class Habit(models.Model):
     """Automatically set the datetime when a habit is marked as complete"""
     def save(self, *args, **kwargs):
         if self.status == 'Completed' and not self.completed_at:
-            self.completed_at = datetime.now()
+            self.completed_at = datetime.datetime.now()
         elif self.status == 'Active':
             self.completed_at = None
         super().save(*args, **kwargs)
