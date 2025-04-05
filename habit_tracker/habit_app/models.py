@@ -40,4 +40,8 @@ class Habit(models.Model):
             self.completed_at = None
         super().save(*args, **kwargs)
     
+    #Add fields for streak
+    current_streak = models.PositiveIntegerField(default=0)
+    longest_streak = models.PositiveIntegerField(default=0)
+    last_completed_date = models.DateField(null=True, blank=True)
 
