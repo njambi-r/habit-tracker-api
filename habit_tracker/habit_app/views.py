@@ -151,7 +151,12 @@ class HabitFilterView(APIView):
                 #filter
                 queryset = queryset.filter(start_date__range=[start_date, end_date])
             except ValueError:
-                return Response({"error": "Invalid date format. Use YYYY-MM-DD for 'start_date' and 'end_date' and ensure the date is valid."}, status=status.HTTP_400_BAD_REQUEST)       
+                return Response({"error": "Invalid date format. Use YYYY-MM-DD for 'start_date' and 'end_date' and ensure the date is valid."}, status=status.HTTP_400_BAD_REQUEST)    
+
+            #if filtertype does not meet any of the above requirements
+            else:
+                return Response(
+                    {"error": f"'{filter_type}' is not a valid filter type. Use one of: day, week, month, year, custom."}, status=status.HTTP_400_BAD_REQUEST)          
         
         #paginating the filter results
         paginator = HabitPagination()
