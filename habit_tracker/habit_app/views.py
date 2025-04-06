@@ -101,7 +101,7 @@ class HabitViewSet(viewsets.ModelViewSet):
         analytics.total_completions += 1
         
         #update the streak
-        if habit.last_completed_date == timezone.now().date() - timedelta(days=1):
+        if analytics.last_completed_date == timezone.now().date() - timedelta(days=1):
             analytics.current_streak +=1
         else:
             analytics.current_streak = 1 #reset to 1
