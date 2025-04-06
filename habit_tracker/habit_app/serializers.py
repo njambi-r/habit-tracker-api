@@ -11,7 +11,9 @@ class HabitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Habit
         fields = '__all__' #fields to include in the api response
-        read_only_fields = ['user','created_at', 'completed_at']
+        read_only_fields = ['user','created_at', 'completed_at', 
+                            'closed_at', 'current_streak', 
+                            'longest_streak' ,'last_completed_date']
 
     """Ensure user cannot set start dates in the past"""
     def validate_start_date(self, value):

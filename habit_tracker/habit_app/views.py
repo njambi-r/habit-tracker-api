@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from analytics_app.models import HabitAnalytics
+from django.utils import timezone
 
 # Create your views here.
 # Add pagination to support page numbers as query parameters
@@ -57,32 +58,34 @@ class HabitViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'])
     def mark_complete(self, request, pk=None):
         habit = self.get_object()
-        if habit.status == 'Completed':
+        if habit.completed == 'True':
             return Response({'message': 'Habit is already completed.'}, status=400)
-        habit.status = 'Completed'
-        habit.save()
+        habit.completed = 'True'
+ 
 
         #update the streak
-        if habit.last_completed_date == today - timedelta(days=1):
+        if habit.last_completed_date == timezone.now().date() - timedelta(days=1):
             habit.current_streak +=1
         else:
             habit.current_streak = 1 #reset to 1
 
         habit.longest_streak = max(habit.longest_streak, habit.current_streak)
-        habit.last_completed_date = today
-
+        habit.last_completed_date = timezone.now().date()
+        
         #analytics
         analytics, created = HabitAnalytics.objects.get_or_create(habit=habit)
         analytics.total_completions += 1
-        analytics.last_updated = datetime.now()
+        analytics.last_updated = timezone.now().date()
         analytics.save()
+        print(f"Created new analytics: {created}, Current total completions: {analytics.total_completions}") #debug
 
+        habit.save()
         return Response({'message': 'Habit marked as complete and analytics updated.'})
     
 
 
     """
-    Action when user wants to reactivate a habit they already completed in the past
+    Action when user wants to reactivate a habit they already closed in the past
     A new instance of the habit will be created instead.
     The habit will be duplicated as opposed to marking it as active to retain records
     """
@@ -90,15 +93,15 @@ class HabitViewSet(viewsets.ModelViewSet):
     def reactivate_habit(self, request, pk=None):
         habit = self.get_object()
 
-        if habit.status != 'Completed':
-            return Response({'message': 'Only completed habits can be reactivated.'}, status=400)
+        if habit.status != 'Closed':
+            return Response({'message': 'Only closed habits can be reactivated.'}, status=400)
 
         # Validate start_date
         start_date = request.data.get('start_date', None)
         if start_date:
             try:
                 start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
-                if start_date < datetime.now().date():
+                if start_date < timezone.now().date():
                     return Response({'message': 'Start date must be today or in the future.'}, status=status.HTTP_400_BAD_REQUEST)
             except ValueError:
                 return Response({'message': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -110,11 +113,17 @@ class HabitViewSet(viewsets.ModelViewSet):
                 user=request.user,
                 name=habit.name,  # Copy name
                 description=habit.description,  # Pre-filled but editable
-                created_at=datetime.now(),  # Reflect the reactivation timestamp
+                created_at=timezone.now().date(),  # Reflect the reactivation timestamp
                 start_date=start_date,  # User-defined start date or default now
                 frequency=habit.frequency,  # Pre-filled but editable
                 status="Active",  # Reset to Active
-                completed_at=None  # Ensure it's not marked as completed
+                completed = models.BooleanField(default=False),
+                completed_at=None,  # Ensure it's not marked as completed
+                closed_at = models.DateTimeField(null=True, blank=True),
+
+                current_streak = models.PositiveIntegerField(default=0),
+                longest_streak = models.PositiveIntegerField(default=0),
+                last_completed_date = models.DateField(null=True, blank=True)
             )
 
             return Response({
@@ -141,7 +150,7 @@ class HabitFilterView(APIView):
         start_date = request.query_params.get('start_date')
         end_date = request.query_params.get('end_date')
 
-        today = datetime.now().date()
+        today = timezone.now().date()
         queryset = Habit.objects.filter(user=user) #ensure user can only filter their data
 
         if filter_type == 'day':
