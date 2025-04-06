@@ -42,6 +42,8 @@ class ReminderViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'])
     def deactivate_reminder(self, request, pk=None):
         reminder = self.get_object()
+        if reminder.is_active == False:
+            return Response({"message": "Reminder is already inactive."})
         reminder.is_active = False
         reminder.save()
         return Response({"message": "Reminder deactivated successfully."})
@@ -49,6 +51,8 @@ class ReminderViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'])
     def activate_reminder(self, request, pk=None):
         reminder = self.get_object()
+        if reminder.is_active == True:
+            return Response({"message": "Reminder is already active."})
         reminder.is_active = True
         reminder.save()
         return Response({"message": "Reminder activated successfully."})
