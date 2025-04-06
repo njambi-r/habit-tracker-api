@@ -85,15 +85,17 @@ class HabitViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'])
     def mark_complete(self, request, pk=None):
         habit = self.get_object()
+
         if habit.status != 'Active':
             return Response({'message': 'Habit is closed.'}, status=400)
         
         if habit.completed:
             Response({"message": "Habit is already marked as completed for this period."}, status=status.HTTP_400_BAD_REQUEST)
         
+        habit.completed_at = timezone.now()
         habit.completed = True
- 
-
+        habit.last_checked = timezone.now()
+        
         #update the streak
         if habit.last_completed_date == timezone.now().date() - timedelta(days=1):
             habit.current_streak +=1
@@ -112,6 +114,21 @@ class HabitViewSet(viewsets.ModelViewSet):
 
         habit.save()
         return Response({'message': 'Habit marked as complete and analytics updated.'})
+    
+    #Mark habit as closed
+    @action(detail=True, methods=['patch'])
+    def mark_closed(self, request, pk=None):
+        habit = self.get_object()
+
+        if habit.status == 'Closed':
+            return Response({'message': 'Habit is already closed.'}, status=400)
+
+        habit.status = 'Closed'
+        habit.closed_at = timezone.now()
+        habit.completed = False
+        habit.save(update_fields=['status', 'closed_at', 'completed'])
+
+        return Response({'message': 'Habit successfully marked as closed.'})
 
     """
     Action when user wants to reactivate a habit they already closed in the past
@@ -160,6 +177,7 @@ class HabitViewSet(viewsets.ModelViewSet):
                 'new_habit_id': new_habit.id
             }, status=status.HTTP_201_CREATED
             )
+        
 
 # Adding date-based filtering
 """filter habits by day, week, month, year, or even custom dates"""
