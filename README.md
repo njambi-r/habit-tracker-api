@@ -35,65 +35,65 @@ Habits reset based on frequency and completion status—automatically handled us
 # 🧪 API Endpoints
 **Register**
 
-POST api/register/  - Register new account
+POST *api/register/*    - Register new account
 
 **Login**
 
-POST api/login/ - Log into account
+POST *api/login/*   - Log into account
 
 **Profile**
 
-GET api/profile/    - View profile
+GET *api/profile/*  - View profile
 
-PUT api/profile/    - Fully update profile
+PUT *api/profile/*  - Fully update profile
 
-PATCH api/profile/  - Partially update profile
+PATCH *api/profile/*    - Partially update profile
 
 **Habits**
 
-GET api/habits/ - View all habits
+GET *api/habits/*   - View all habits
 
-POST api/habits/    - Create habit
+POST *api/habits/*  - Create habit
 
-GET api/habits/{id}/    - Read specific habit
+GET *api/habits/{id}/*  - Read specific habit
 
-PUT api/habits/{id}/    - Update habit
+PUT *api/habits/{id}/*  - Update habit
 
-PATCH api/habits/{id}/  - Partially update habit
+PATCH *api/habits/{id}/*    - Partially update habit
 
-DELETE api/habits/{id}/ - Delete habit
+DELETE *api/habits/{id}/*   - Delete habit
 
-PATCH api/habits/{id}/mark_closed/  - Close habit
+PATCH *api/habits/{id}/mark_closed/*    - Close habit
 
-PATCH api/habits/{id}/mark_complete/    - Complete habit
+PATCH *api/habits/{id}/mark_complete/*  - Complete habit
 
-PATCH api/habits/{id}/reactivate_habit/ - Reactivate a closed habit
+PATCH *api/habits/{id}/reactivate_habit/*   - Reactivate a closed habit
 
-GET api/filter-habits/  - filter habits by day, week, month, year, or custom dates
+GET *api/filter-habits/*    - filter habits by day, week, month, year, or custom dates
 
 **Reminders**
 
-GET api/reminders/   - List reminders
+GET *api/reminders/*    - List reminders
 
-POST api/reminders/  - Create reminder
+POST *api/reminders/*   - Create reminder
 
-GET api/reminders/{id}/ - Read specific reminder
+GET *api/reminders/{id}/*   - Read specific reminder
 
-PUT api/reminders/{id}/ - Update reminder
+PUT *api/reminders/{id}/*   - Update reminder
 
-PATCH api/reminders/{id}/   - Partially update reminder
+PATCH *api/reminders/{id}/* - Partially update reminder
 
-DELETE api/reminders/{id}/  - Delete reminder
+DELETE *api/reminders/{id}/*    - Delete reminder
 
-PATCH api/reminders/{id}/activate_reminder/ - Activate inactive reminder
+PATCH *api/reminders/{id}/activate_reminder/*   - Activate inactive reminder
 
-PATCH api/reminders/{id}/deactivate_reminder/   - Deactivate active reminder
+PATCH *api/reminders/{id}/deactivate_reminder/* - Deactivate active reminder
 
 **Analytics**
 
-GET api/analytics/  - List habit performance
+GET *api/analytics/*    - List habit performance
 
-GET api/analytics/{id}/ - List for specific habit
+GET *api/analytics/{id}/*   - List for specific habit
 
 # 🚦 Getting Started
 **1. Clone the repository**
