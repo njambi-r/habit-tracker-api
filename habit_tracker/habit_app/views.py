@@ -11,6 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from analytics_app.models import HabitAnalytics
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 # Create your views here.
 # Add pagination to support page numbers as query parameters
@@ -49,6 +50,32 @@ class HabitViewSet(viewsets.ModelViewSet):
     perform_create is used when you want to supply 
     extra data before save (like serializer.save(owner=self.request.user) 
     """
+
+    # add reset logic to reset recurrent completions e.g, reset completed to false on a new day 
+    def get_queryset(self):
+        queryset = Habit.objects.filter(user=self.request.user.id)
+
+        now = timezone.now()
+
+        for habit in queryset:
+            if habit.status != 'Active':
+                continue
+
+            last_checked = habit.last_checked or timezone.now()
+            reset = False
+            if habit.frequency == 'daily' and (now.date() > habit.last_checked.date()):
+                reset = True
+            elif habit.frequency == 'weekly' and (now.date() - habit.last_checked.date() >= timedelta(weeks=1)):
+                reset = True
+            elif habit.frequency == 'monthly' and (now.date() - habit.last_checked.date() >= relativedelta(months=1)):
+                reset = True
+
+            if reset:
+                habit.completed = False
+                habit.last_checked = now
+                habit.save(update_fields=['completed', 'last_checked'])
+
+        return queryset    
     
     # https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions:~:text=URL%20configuration%20throughout.-,ViewSet%20actions,-The%20default%20routers
     """
@@ -81,8 +108,6 @@ class HabitViewSet(viewsets.ModelViewSet):
 
         habit.save()
         return Response({'message': 'Habit marked as complete and analytics updated.'})
-    
-
 
     """
     Action when user wants to reactivate a habit they already closed in the past
@@ -129,7 +154,8 @@ class HabitViewSet(viewsets.ModelViewSet):
             return Response({
                 'message': 'Habit reactivated successfully as a new occurrence.',
                 'new_habit_id': new_habit.id
-            }, status=status.HTTP_201_CREATED)
+            }, status=status.HTTP_201_CREATED
+            )
 
 # Adding date-based filtering
 """filter habits by day, week, month, year, or even custom dates"""

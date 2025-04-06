@@ -34,7 +34,7 @@ class Habit(models.Model):
     completed = models.BooleanField(default=False) #track recurring completions
     completed_at = models.DateTimeField(null=True, blank=True)
     closed_at = models.DateTimeField(null=True, blank=True)
-    
+    last_checked = models.DateTimeField(null=True, blank=True)  # internal reset tracking
 
     #Add fields for streak
     current_streak = models.PositiveIntegerField(default=0)
