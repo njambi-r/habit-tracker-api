@@ -85,9 +85,13 @@ class HabitViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'])
     def mark_complete(self, request, pk=None):
         habit = self.get_object()
-        if habit.completed == 'True':
-            return Response({'message': 'Habit is already completed.'}, status=400)
-        habit.completed = 'True'
+        if habit.status != 'Active':
+            return Response({'message': 'Habit is closed.'}, status=400)
+        
+        if habit.completed:
+            Response({"message": "Habit is already marked as completed for this period."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        habit.completed = True
  
 
         #update the streak
