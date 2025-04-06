@@ -155,29 +155,26 @@ class HabitViewSet(viewsets.ModelViewSet):
         else:
             start_date = datetime.now()
             
-            # Create a new habit instance
-            new_habit = Habit.objects.create(
-                user=request.user,
-                name=habit.name,  # Copy name
-                description=habit.description,  # Pre-filled but editable
-                created_at=timezone.now().date(),  # Reflect the reactivation timestamp
-                start_date=start_date,  # User-defined start date or default now
-                frequency=habit.frequency,  # Pre-filled but editable
-                status="Active",  # Reset to Active
-                completed = models.BooleanField(default=False),
-                completed_at=None,  # Ensure it's not marked as completed
-                closed_at = models.DateTimeField(null=True, blank=True),
+        # Create a new habit instance
+        new_habit = Habit.objects.create(
+            user=request.user,
+            name=habit.name,  # Copy name
+            description=habit.description,  # Pre-filled but editable
+            created_at=timezone.now().date(),  # Reflect the reactivation timestamp
+            start_date=start_date,  # User-defined start date or default now
+            frequency=habit.frequency,  # Pre-filled but editable
+            status="Active",  # Reset to Active
+            completed=False,
+            completed_at=None,  # Ensure it's not marked as completed
+            closed_at = None,
+            last_checked = None
+        )
 
-                current_streak = models.PositiveIntegerField(default=0),
-                longest_streak = models.PositiveIntegerField(default=0),
-                last_completed_date = models.DateField(null=True, blank=True)
-            )
-
-            return Response({
-                'message': 'Habit reactivated successfully as a new occurrence.',
-                'new_habit_id': new_habit.id
-            }, status=status.HTTP_201_CREATED
-            )
+        return Response({
+            'message': 'Habit reactivated successfully as a new occurrence.',
+            'new_habit_id': new_habit.id
+        }, status=status.HTTP_201_CREATED
+        )
         
 
 # Adding date-based filtering
