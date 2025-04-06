@@ -30,7 +30,7 @@ Habits reset based on frequency and completion status—automatically handled us
 
 **Frontend:** Bring your own 
 
-**Documentation:** Swagger/OpenAPI (drf-yasg)
+**Documentation:** Swagger/OpenAPI (drf-yasg). Access at: http://localhost:8000/swagger/
 
 # 🧪 API Endpoints
 **Register**
