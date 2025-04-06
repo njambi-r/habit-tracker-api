@@ -1,26 +1,27 @@
 # habit-tracker-api
 A Django-based Habit Tracker web application that helps users track their habits.
 
-🚀 Features
-🔐 User Authentication
+# 🚀 Features
+
+🔐**User Authentication**
 Register, log in, and manage your habits.
 
-📆 Habit Management
+📆 **Habit Management**
 Create, read, edit, delete, duplicate, mark complete, close, and reactivate habits.
 
-🔎 Search, Filter, and Sort Habits
+🔎 **Search, Filter, and Sort Habits**
 Filter Habits by Day, Week, Month, and Year
 
-⏰ Reminders
+⏰ **Reminders**
 Set custom reminder times for your habits. Automatically deactivate reminders when associated habit is marked as closed.
 
-📊 Analytics
+📊 **Analytics**
 Track streaks and total completions.
 
-🔁 Auto-Reset Habit Completion Logic
+🔁 **Auto-Reset Habit Completion Logic**
 Habits reset based on frequency and completion status—automatically handled using lazy evaluation logic.
 
-🛠️ Tech Stack
+# 🛠️ Tech Stack
 Backend: Django REST Framework
 
 Database: SQLite for development
@@ -31,74 +32,83 @@ Frontend: Bring your own
 
 Documentation: Swagger/OpenAPI (drf-yasg)
 
-📂 Project Structure
-habit_tracker/
-├── habit_app/           # Handles habit models, views, serializers
-├── reminder_app/        # Handles reminder logic tied to habits
-├── analytics_app/        # Tracks habit performance over time
-├── user_app/            # User registration and authentication
-├── habit_tracker/             # Shared utilities, settings, etc.
-├── db.sqlite3             # database.
-└── manage.py
-
-🧪 API Endpoints
-Register
+# 🧪 API Endpoints
+**Register**
 POST api/register/  - Register new account
 
-Login
+**Login**
 POST api/login/ - Log into account
 
-Profile
+**Profile**
 GET api/profile/    - View profile
+
 PUT api/profile/    - Fully update profile
+
 PATCH api/profile/  - Partially update profile
 
-Habits
+**Habits**
 GET api/habits/ - View all habits
+
 POST api/habits/    - Create habit
+
 GET api/habits/{id}/    - Read specific habit
+
 PUT api/habits/{id}/    - Update habit
+
 PATCH api/habits/{id}/  - Partially update habit
+
 DELETE api/habits/{id}/ - Delete habit
+
 PATCH api/habits/{id}/mark_closed/  - Close habit
+
 PATCH api/habits/{id}/mark_complete/    - Complete habit
+
 PATCH api/habits/{id}/reactivate_habit/ - Reactivate a closed habit
+
 GET api/filter-habits/  - filter habits by day, week, month, year, or custom dates
 
-Reminders
+**Reminders**
 GET api/reminders/   - List reminders
+
 POST api/reminders/  - Create reminder
+
 GET api/reminders/{id}/ - Read specific reminder
+
 PUT api/reminders/{id}/ - Update reminder
+
 PATCH api/reminders/{id}/   - Partially update reminder
+
 DELETE api/reminders/{id}/  - Delete reminder
+
 PATCH api/reminders/{id}/activate_reminder/ - Activate inactive reminder
+
 PATCH api/reminders/{id}/deactivate_reminder/   - Deactivate active reminder
 
-Analytics
+**Analytics**
 GET api/analytics/  - List habit performance
+
 GET api/analytics/{id}/ - List for specific habit
 
-🚦 Getting Started
-# 1. Clone the repository
+# 🚦 Getting Started
+**1. Clone the repository**
 git clone https://github.com/njambi-r/habit-tracker-api.git
 cd habit_tracker
 
-# 2. Set up a virtual environment
+**2. Set up a virtual environment**
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate.ps1`
 
-# 3. Install dependencies
+**3. Install dependencies**
 pip install -r requirements.txt
 
-# 4. Run migrations
+**4. Run migrations**
 python manage.py migrate
 
-# 5. Run the server
+**5. Run the server**
 python manage.py runserver
 
-📝 Contributing
+# 📝 Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
-📃 License
+# 📃 License
 MIT License © 2025 [Rose Kihungu]
