@@ -95,19 +95,20 @@ class HabitViewSet(viewsets.ModelViewSet):
         habit.completed_at = timezone.now()
         habit.completed = True
         habit.last_checked = timezone.now()
+             
+        #update analytics
+        analytics, created = HabitAnalytics.objects.get_or_create(habit=habit)
+        analytics.total_completions += 1
         
         #update the streak
         if habit.last_completed_date == timezone.now().date() - timedelta(days=1):
-            habit.current_streak +=1
+            analytics.current_streak +=1
         else:
-            habit.current_streak = 1 #reset to 1
+            analytics.current_streak = 1 #reset to 1
 
-        habit.longest_streak = max(habit.longest_streak, habit.current_streak)
-        habit.last_completed_date = timezone.now().date()
-        
-        #analytics
-        analytics, created = HabitAnalytics.objects.get_or_create(habit=habit)
-        analytics.total_completions += 1
+        analytics.longest_streak = max(analytics.longest_streak, analytics.current_streak)
+        analytics.last_completed_date = timezone.now().date()
+
         analytics.last_updated = timezone.now().date()
         analytics.save()
         print(f"Created new analytics: {created}, Current total completions: {analytics.total_completions}") #debug

@@ -36,11 +36,6 @@ class Habit(models.Model):
     closed_at = models.DateTimeField(null=True, blank=True)
     last_checked = models.DateTimeField(null=True, blank=True)  # internal reset tracking
 
-    #Add fields for streak
-    current_streak = models.PositiveIntegerField(default=0)
-    longest_streak = models.PositiveIntegerField(default=0)
-    last_completed_date = models.DateField(null=True, blank=True)
-
 
     """Automatically set the datetime when a habit is marked as complete"""
     def save(self, *args, **kwargs):
